@@ -1,20 +1,20 @@
-from quiz_brain import QuizBrain
+import turtle as t
+import random
+tim = t.Turtle()
+t.colormode(255)
+def random_color():
+    r = random.randint(0 , 255)
+    g = random.randint(0 , 255)
+    b = random.randint(0 , 255)
+    color = (r , g , b)
+    return color
+tim.speed("fastest")
+def draw(size_of_gap):
+    for i in range(int(360/size_of_gap)):
+        tim.color(random_color())
+        tim.setheading(tim.heading() + size_of_gap)
+        tim.circle(100)
+draw(5)
 
-
-class Question:
-    def __init__(self , q_text , q_answer):
-        self.text = q_text
-        self.answer = q_answer
-
-from data import question_data
-question_bank = []
-for questions in question_data:
-    question_text = questions["text"]
-    question_answer = questions["answer"]
-    new_questions = Question(question_text , question_answer)
-    question_bank.append(new_questions)
-quiz =QuizBrain(question_bank)
-while quiz.still_has_questions():
-    quiz.next_question()
-print(f"\n\nYour final score is {quiz.score}/{quiz.question_number}")
-
+screen = t.Screen()
+screen.exitonclick()
