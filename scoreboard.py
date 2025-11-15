@@ -3,30 +3,24 @@ from turtle import Turtle
 class Scoreboard(Turtle):
     def __init__(self):
         super().__init__()
-        self.score = 0
+        self.l_score = 0
+        self.r_score = 0
         self.penup()
         self.color("white")
-        self.goto(0, 260)
-        self.write(f"Score = {self.score}" , align="center" , font=("Arial" , 24 , "normal"))
         self.hideturtle()
+        self.update_score()
 
-    def game_over(self):
-        self.goto(0 , 0)
-        self.write("Game Over" , align="center" , font=("Arial" , 24 , "normal"))
-    def increase_scoreboard(self):
-        self.score += 1
+    def update_score(self):
         self.clear()
-        self.write(f"Score = {self.score}", align="center", font=("Arial", 24, "normal"))
+        self.goto(-100, 200)
+        self.write(self.l_score, align="center", font=("Arial", 24, "normal"))
+        self.goto(100, 200)
+        self.write(self.r_score, align="center", font=("Arial", 24, "normal"))
 
+    def increase_l_score(self):
+        self.l_score += 1
+        self.update_score()
 
-
-class Snake:
-    def __init__(self):
-        self.snakes = []
-
-    def add_segment(self, position):
-        new_segment = Turtle("square")
-        new_segment.color("white")
-        new_segment.penup()
-        new_segment.goto(position)
-        self.snakes.append(new_segment)
+    def increase_r_score(self):
+        self.r_score += 1
+        self.update_score()
