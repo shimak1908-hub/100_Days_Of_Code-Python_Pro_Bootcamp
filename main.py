@@ -1,44 +1,48 @@
-import time
-from turtle import Screen
-from player import Player
-from car_manager import CarManager
-from scoreboard import Scoreboard
+import turtle
+import pandas as pd
 
-# Screen setup
-screen = Screen()
-screen.setup(width=600, height=600)
-screen.tracer(0)
-screen.title("Turtle Crossing Game")
+screen = turtle.Screen()
+screen.title("U.S. States Game")
 
-# Create game objects
-player = Player()
-car_manager = CarManager()
-scoreboard = Scoreboard()
+IMAGE = "blank_states_img.gif"
+screen.addshape(IMAGE)
+turtle.shape(IMAGE)
 
-# Keyboard controls
-screen.listen()
-screen.onkey(player.go_up, "Up")
+data = pd.read_csv("50_states.csv")
+all_states = data.state.to_list()
+guessed_states = []
 
-# Game loop
-game_is_on = True
-while game_is_on:
-    time.sleep(0.1)
-    screen.update()
+while len(guessed_states) < 50:
+    answer_state = screen.textinput(
+        title=f"{len(guessed_states)}/50 States Correct",
+        prompt="Write the name of a U.S. state (or type Exit):"
+    )
 
-    # Create and move cars
-    car_manager.create_cars()
-    car_manager.move_cars()
+    if answer_state is None:
+        continue
 
-    # Detect collision with car
-    for car in car_manager.all_cars:
-        if car.distance(player) < 20:
-            game_is_on = False
-            scoreboard.game_over()
+    answer_state = answer_state.title()
 
-    # Detect successful crossing
-    if player.at_finish_line():   # ✅ use at_finish_line(), not if_at_finish_line()
-        player.go_to_start()
-        car_manager.level_up()
-        scoreboard.increase_level()
+    if answer_state == "Exit":
+        break
+
+    if answer_state in all_states and answer_state not in guessed_states:
+        guessed_states.append(answer_state)
+
+        state_data = data[data.state == answer_state]
+
+        marker = turtle.Turtle()
+        marker.hideturtle()
+        marker.penup()
+        marker.goto(state_data.x.item(),state_data.y.item())
+        marker.write(answer_state, align="center", font=("Arial", 10, "normal"))
+
+
+missing_states = [state for state in all_states if state not in guessed_states]
+
+pd.DataFrame(missing_states).to_csv("states_to_learn.csv", index=False)
+
+turtle.mainloop()
+
 
 screen.exitonclick()
