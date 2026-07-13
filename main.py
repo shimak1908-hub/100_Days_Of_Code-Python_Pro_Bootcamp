@@ -1,120 +1,152 @@
 from tkinter import *
 from tkinter import messagebox
 import random
-import json  # Added to read and write JSON data
+
+# ---------------------------- COLOR PALETTE & CONSTANTS ------------------------------- #
+BACKGROUND_COLOR = "#F4F6F9"
+CARD_FRONT_COLOR = "#FFFFFF"
+CARD_BACK_COLOR = "#2C3E50"
+TEXT_DARK = "#333333"
+TEXT_LIGHT = "#FFFFFF"
+ACCENT_BLUE = "#3498DB"
+ACCENT_GREEN = "#2ECC71"
+ACCENT_RED = "#E74C3C"
+
+FONT_KANJI = ("Helvetica", 70, "bold")
+FONT_LABEL = ("Helvetica", 12, "normal")
+FONT_MEANING = ("Helvetica", 24, "bold")
+FONT_STATS = ("Helvetica", 14, "bold")
+
+# ---------------------------- KANJI DATA DATASET ------------------------------- #
+KANJI_DATASET = [
+    {"kanji": "一", "meaning": "One", "onyomi": "イチ", "kunyomi": "ひと-つ"},
+    {"kanji": "二", "meaning": "Two", "onyomi": "ニ", "kunyomi": "ふた-つ"},
+    {"kanji": "三", "meaning": "Three", "onyomi": "サン", "kunyomi": "みっ-つ"},
+    {"kanji": "四", "meaning": "Four", "onyomi": "シ", "kunyomi": "よっ-つ"},
+    {"kanji": "五", "meaning": "Five", "onyomi": "ゴ", "kunyomi": "いつ-つ"},
+    {"kanji": "六", "meaning": "Six", "onyomi": "ロク", "kunyomi": "むっ-つ"},
+    {"kanji": "七", "meaning": "Seven", "onyomi": "シチ", "kunyomi": "なな-つ"},
+    {"kanji": "八", "meaning": "Eight", "onyomi": "ハチ", "kunyomi": "よう-つ"},
+    {"kanji": "九", "meaning": "Nine", "onyomi": "キュウ", "kunyomi": "ここの-つ"},
+    {"kanji": "十", "meaning": "Ten", "onyomi": "ジュウ", "kunyomi": "とお"},
+    {"kanji": "日", "meaning": "Day / Sun", "onyomi": "ニチ", "kunyomi": "ひ"},
+    {"kanji": "本", "meaning": "Book / Origin", "onyomi": "ホン", "kunyomi": "moto"},
+    {"kanji": "人", "meaning": "Person", "onyomi": "ジン / ニン", "kunyomi": "hito"},
+    {"kanji": "月", "meaning": "Moon / Month", "onyomi": "ゲツ / ガツ", "kunyomi": "tsuki"},
+    {"kanji": "火", "meaning": "Fire", "onyomi": "カ", "kunyomi": "hi"},
+    {"kanji": "水", "meaning": "Water", "onyomi": "スイ", "kunyomi": "mizu"},
+    {"kanji": "木", "meaning": "Tree / Wood", "onyomi": "モク", "kunyomi": "ki"},
+    {"kanji": "金", "meaning": "Gold / Money", "onyomi": "キン", "kunyomi": "kane"},
+    {"kanji": "土", "meaning": "Earth / Soil", "onyomi": "ド", "kunyomi": "tsuchi"},
+]
+
+# ---------------------------- APP STATE & LOGIC ------------------------------- #
+current_card = {}
+score = 0
+is_flipped = False
 
 
-# ---------------------------- SEARCH PASSWORD ------------------------------- #
-def find_password():
-    website = website_entry.get().title()  # standardizing case for reliable matching
+def next_card():
+    global current_card, is_flipped
+    is_flipped = False
+    current_card = random.choice(KANJI_DATASET)
 
-    if len(website) == 0:
-        messagebox.showinfo(title="Error", message="Please enter a website to search.")
+    # Reset Card Background
+    card_canvas.config(bg=CARD_FRONT_COLOR)
+
+    # FIXED: Using card_canvas.itemconfig() for elements inside the canvas
+    card_canvas.itemconfig(card_title, text="Kanji", fill=ACCENT_BLUE)
+    card_canvas.itemconfig(card_main, text=current_card["kanji"], font=FONT_KANJI, fill=TEXT_DARK)
+    card_canvas.itemconfig(card_sub, text="Click Card to Flip & Reveal Meaning", fill="#7F8C8D",
+                           font=("Helvetica", 10, "italic"))
+
+
+def flip_card(event=None):
+    global is_flipped
+    if not is_flipped:
+        is_flipped = True
+        card_canvas.config(bg=CARD_BACK_COLOR)
+
+        details = f"{current_card['meaning']}\n\n" \
+                  f"Onyomi: {current_card['onyomi']}\n" \
+                  f"Kunyomi: {current_card['kunyomi']}"
+
+        # FIXED: Using card_canvas.itemconfig() for elements inside the canvas
+        card_canvas.itemconfig(card_title, text="Meaning & Readings", fill=ACCENT_GREEN)
+        card_canvas.itemconfig(card_main, text=details, font=FONT_MEANING, fill=TEXT_LIGHT)
+        card_canvas.itemconfig(card_sub, text="Mark 'Correct' or 'Wrong' below", fill="#BDC3C7",
+                               font=("Helvetica", 10, "italic"))
+
+
+def mark_correct():
+    global score
+    if not is_flipped:
+        flip_card()
         return
-
-    try:
-        with open("data.json", "r") as data_file:
-            data = json.load(data_file)
-    except FileNotFoundError:
-        messagebox.showinfo(title="Error", message="No data file found. Save a password first!")
-    else:
-        if website in data:
-            email = data[website]["email"]
-            password = data[website]["password"]
-            messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
-        else:
-            messagebox.showinfo(title="Not Found", message=f"No details for '{website}' exist.")
+    score += 1
+    score_label.config(text=f"Score: {score}")
+    next_card()
 
 
-# ---------------------------- PASSWORD GENERATOR ------------------------------- #
-def generate_password():
-    password_entry.delete(0, END)
-    letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    numbers = '0123456789'
-    symbols = '!#$%&()*+'
-
-    password_list = [random.choice(letters) for _ in range(8)]
-    password_list += [random.choice(symbols) for _ in range(2)]
-    password_list += [random.choice(numbers) for _ in range(2)]
-
-    random.shuffle(password_list)
-    password = "".join(password_list)
-    password_entry.insert(0, password)
+def mark_wrong():
+    if not is_flipped:
+        flip_card()
+        return
+    next_card()
 
 
-# ---------------------------- SAVE PASSWORD ------------------------------- #
-def save():
-    website = website_entry.get().title()
-    email = email_entry.get()
-    password = password_entry.get()
-
-    # Formatting structure for JSON
-    new_data = {
-        website: {
-            "email": email,
-            "password": password
-        }
-    }
-
-    if len(website) == 0 or len(password) == 0:
-        messagebox.showinfo(title="Oops", message="Please don't leave any fields empty!")
-    else:
-        try:
-            # 1. Try reading existing file data
-            with open("data.json", "r") as data_file:
-                data = json.load(data_file)
-        except FileNotFoundError:
-            # 2. If it doesn't exist, start fresh with current data
-            data = new_data
-        else:
-            # 3. If file exists, update old dictionary with new data
-            data.update(new_data)
-
-        # 4. Save the updated layout back into the file
-        with open("data.json", "w") as data_file:
-            json.dump(data, data_file, indent=4)
-
-        website_entry.delete(0, END)
-        password_entry.delete(0, END)
-
-
-# ---------------------------- UI SETUP ------------------------------- #
+# ---------------------------- UI INTERFACE WINDOW ------------------------------- #
 window = Tk()
-window.title("Password Manager")
-window.config(padx=50, pady=50)
+window.title("Level Up Kanji Study Flashcards")
+window.config(padx=30, pady=30, bg=BACKGROUND_COLOR)
+window.resizable(False, False)
 
-canvas = Canvas(height=200, width=200)
-try:
-    logo_img = PhotoImage(file="logo.png")
-    canvas.create_image(100, 100, image=logo_img)
-except:
-    pass
-canvas.grid(row=0, column=1)
+# Score Dashboard Header
+score_label = Label(text=f"Score: {score}", bg=BACKGROUND_COLOR, fg=TEXT_DARK, font=FONT_STATS)
+score_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 20))
 
-# Labels
-website_label = Label(text="Website:")
-website_label.grid(row=1, column=0)
-email_label = Label(text="Email/Username:")
-email_label.grid(row=2, column=0)
-password_label = Label(text="Password:")
-password_label.grid(row=3, column=0)
+# Flat Interactive Canvas Card UI
+card_canvas = Canvas(width=450, height=300, bg=CARD_FRONT_COLOR, highlightthickness=0, bd=0)
+card_canvas.bind("<Button-1>", flip_card)
+card_canvas.grid(row=1, column=0, columnspan=2, pady=(0, 30))
 
-# Entries
-website_entry = Entry(width=21)  # Adjusted width to accommodate search button cleanly
-website_entry.grid(row=1, column=1)
-website_entry.focus()
-email_entry = Entry(width=36)
-email_entry.grid(row=2, column=1, columnspan=2)
-email_entry.insert(0, "common_email@gmail.com")
-password_entry = Entry(width=21)
-password_entry.grid(row=3, column=1)
+# Canvas Text Alignments (These return integer IDs)
+card_title = card_canvas.create_text(225, 45, text="", font=FONT_LABEL)
+card_main = card_canvas.create_text(225, 140, text="", font=FONT_KANJI, justify="center")
+card_sub = card_canvas.create_text(225, 260, text="", font=FONT_LABEL)
 
-# Buttons
-search_button = Button(text="Search", width=11, command=find_password)
-search_button.grid(row=1, column=2)
-gen_pass_button = Button(text="Generate Password", width=11, command=generate_password)
-gen_pass_button.grid(row=3, column=2)
-add_button = Button(text="Add", width=34, command=save)
-add_button.grid(row=4, column=1, columnspan=2)
+# Control Buttons
+wrong_btn = Button(
+    text="✕ Wrong",
+    font=FONT_LABEL,
+    bg=ACCENT_RED,
+    fg=TEXT_LIGHT,
+    activebackground="#C0392B",
+    activeforeground=TEXT_LIGHT,
+    width=12,
+    height=2,
+    bd=0,
+    cursor="hand2",
+    command=mark_wrong
+)
+wrong_btn.grid(row=2, column=0, padx=10)
+
+correct_btn = Button(
+    text="✓ Correct",
+    font=FONT_LABEL,
+    bg=ACCENT_GREEN,
+    fg=TEXT_LIGHT,
+    activebackground="#27AE60",
+    activeforeground=TEXT_LIGHT,
+    width=12,
+    height=2,
+    bd=0,
+    cursor="hand2",
+    command=mark_correct
+)
+correct_btn.grid(row=2, column=1, padx=10)
+
+# Initialize Program Framework State
+next_card()
 
 window.mainloop()
