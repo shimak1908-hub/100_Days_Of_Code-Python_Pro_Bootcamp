@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Invited! | Birthday Celebration</title>
+    <style>
+        /* Base Reset & Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-dark: #0f0c1b;
+            --card-bg: #1c1535;
+            --accent-pink: #ff477e;
+            --accent-purple: #9b5de5;
+            --text-light: #ffffff;
+            --text-muted: #b0a8d3;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Confetti Background Decoration */
+        .ambient-glow {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(255, 71, 126, 0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(155, 93, 229, 0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Hero / Header Panel */
+        header {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .party-emoji {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header p.subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        /* Countdown Widget Grid */
+        .countdown-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .time-box {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            border-radius: 12px;
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .time-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-pink);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .btn-rsvp {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(255, 71, 126, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-rsvp:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 71, 126, 0.6);
+        }
+
+        /* Details & Venue Section */
+        .details-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--accent-pink);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Interactive RSVP Panel */
+        .rsvp-section {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px 100px 20px;
+            text-align: center;
+        }
+
+        .rsvp-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .rsvp-card h2 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .rsvp-card p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-pink);
+        }
+
+        /* Success Message Alert container */
+        .success-overlay {
+            display: none;
+            background: rgba(30, 190, 100, 0.1);
+            border: 1px solid #1ebe64;
+            color: #1ebe64;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Hero Header Screen -->
+    <header>
+        <div class="party-emoji">🎂</div>
+        <h1>Let's Celebrate!</h1>
+        <p class="subtitle">You are invited to my Birthday Party</p>
+        
+        <!-- Interactive Countdown Container -->
+        <div class="countdown-container">
+            <div class="time-box">
+                <span id="days" class="time-number">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-box">
+                <span id="hours" class="time-number">00</span>
+                <span class="time-label">Hrs</span>
+            </div>
+            <div class="time-box">
+                <span id="minutes" class="time-number">00</span>
+                <span class="time-label">Mins</span>
+            </div>
+            <div class="time-box">
+                <span id="seconds" class="time-number">00</span>
+                <span class="time-label">Secs</span>
+            </div>
+        </div>
+
+        <a href="#rsvp" class="btn-rsvp">RSVP Now</a>
+    </header>
+
+    <!-- Details Card Layout -->
+    <section class="details-section">
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>🗓️ Date & Time</h3>
+                <p>Saturday, October 24, 2026<br>Party starts at 7:00 PM</p>
+            </div>
+            <div class="info-card">
+                <h3>📍 Location</h3>
+                <p>The Lounge Penthouse<br>123 Skyway Avenue, Midtown</p>
+            </div>
+        </div>
+        <div class="info-card" style="text-align: center;">
+            <h3>✨ Note from the Host</h3>
+            <p>Get ready for a night full of music, delicious food, and fun. Please let me know if you can make it by submitting the RSVP form below!</p>
+        </div>
+    </section>
+
+    <!-- Interactive RSVP Form Section -->
+    <section id="rsvp" class="rsvp-section">
+        <div class="rsvp-card">
+            <h2>Are You Coming?</h2>
+            <p>Please reply by October 15, 2026</p>
+            
+            <form id="rsvpForm" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label for="fullName">Your Full Name</label>
+                    <input type="text" id="fullName" placeholder="e.g. Alex Johnson" required>
+                </div>
+                <div class="form-group">
+                    <label for="attendance">Will You Attend?</label>
+                    <select id="attendance" required>
+                        <option value="yes">Yes, count me in! 🎉</option>
+                        <option value="no">No, sadly I can't make it 😢</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="plusOne">Bringing a Guest?</label>
+                    <select id="plusOne">
+                        <option value="0">Just Me</option>
+                        <option value="1">+ 1 Guest</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-rsvp" style="width: 100%;">Submit RSVP</button>
+            </form>
+
+            <div id="successBox" class="success-overlay">
+                Thank you! Your RSVP has been saved. See you there! ✨
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- COUNTDOWN TIMING LOGIC ---
+        // Replace with your target birthday party date!
+        const targetDate = new Date("October 24, 2026 19:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference < 0) {
+                document.querySelector(".countdown-container").innerHTML = "<p style='font-size:1.5rem; font-weight:bold;'>The Party Has Begun! 🎉</p>";
+                return;
+            }
+
+            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = d < 10 ? "0" + d : d;
+            document.getElementById("hours").innerText = h < 10 ? "0" + h : h;
+            document.getElementById("minutes").innerText = m < 10 ? "0" + m : m;
+            document.getElementById("seconds").innerText = s < 10 ? "0" + s : s;
+        }
+
+        // Keep counting down every single second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial runner calculation
+
+        // --- INTERACTIVE RSVP LOCAL STORAGE SAVER ---
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Extract User Data
+            const name = document.getElementById("fullName").value;
+            const status = document.getElementById("attendance").value;
+            const guests = document.getElementById("plusOne").value;
+
+            const responsePayload = {
+                name: name,
+                attending: status,
+                guests: guests,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to LocalStorage in the browser so the client's action is saved
+            localStorage.setItem("party_rsvp_" + name.replace(/\s+/g, '_'), JSON.stringify(responsePayload));
+
+            // Hide Form and Show Sweet Success Alert
+            document.getElementById("rsvpForm").style.display = "none";
+            
+            const successBox = document.getElementById("successBox");
+            if(status === "no") {
+                successBox.innerText = "Thanks for letting me know! You'll be missed! 💜";
+            }
+            successBox.style.display = "block";
+        }
+    </script>
+</body>
+</html>
