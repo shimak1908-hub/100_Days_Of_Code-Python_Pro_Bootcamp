@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Vamos! | Learn Spanish Dashboard</title>
+    <style>
+        /* Modern Reset and System Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-dark: #0b0f19;
+            --card-bg: #151c2c;
+            --accent-gold: #f1c40f;
+            --accent-red: #e74c3c;
+            --text-main: #ffffff;
+            --text-muted: #8e9bb4;
+            --border-line: rgba(255, 255, 255, 0.06);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        /* Hero / Header Layout */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, rgba(241, 196, 15, 0.08) 0%, rgba(11, 15, 25, 0) 100%);
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Core Application Container */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto 0 auto;
+            padding: 0 20px;
+        }
+
+        h2.section-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-line);
+            padding-bottom: 8px;
+        }
+
+        /* Interactive Vocabulary Card Layout Grid */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .vocab-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-red));
+        }
+
+        .spanish-word {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+        }
+
+        .pronunciation {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .english-meaning {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        /* Layout Partition for Two-Column Mode */
+        .flex-container {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 850px) {
+            .flex-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modern Table Customization */
+        .table-wrapper {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        .td-spanish {
+            font-weight: bold;
+        }
+
+        /* Interactive CSS Flashcard Tester Widget */
+        .flashcard-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            height: fit-content;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 180px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        /* Trigger card flipping mechanics on active click/hold */
+        .card-container:active .card-inner, 
+        .card-container:focus .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .card-front {
+            background-color: rgba(241, 196, 15, 0.03);
+            color: var(--accent-gold);
+        }
+
+        .card-back {
+            background-color: rgba(231, 76, 60, 0.03);
+            color: var(--text-main);
+            transform: rotateY(180deg);
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>¡Aprende <span>Español</span>!</h1>
+        <p>Your interactive accelerator dashboard for mastering core Spanish numbers, vocabulary, and daily expressions.</p>
+    </header>
+
+    <main class="container">
+        
+        <!-- Section 1: Number Blocks -->
+        <h2 class="section-title">🔢 Los Números (Numbers 1-4)</h2>
+        <div class="vocab-grid">
+            <div class="vocab-card">
+                <div class="spanish-word">Uno</div>
+                <span class="pronunciation">/oo-noh/</span>
+                <div class="english-meaning">One</div>
+            </div>
+            <div class="vocab-card">
+                <div class="spanish-word">Dos</div>
+                <span class="pronunciation">/dohs/</span>
+                <div class="english-meaning">Two</div>
+            </div>
+            <div class="vocab-card">
+                <div class="spanish-word">Tres</div>
+                <span class="pronunciation">/trehs/</span>
+                <div class="english-meaning">Three</div>
+            </div>
+            <div class="vocab-card">
+                <div class="spanish-word">Cuatro</div>
+                <span class="pronunciation">/kwah-troh/</span>
+                <div class="english-meaning">Four</div>
+            </div>
+        </div>
+
+        <!-- Section 2: Split Conversational and Flashcard Panel -->
+        <div class="flex-container">
+            
+            <!-- Left Side Elements: Phrases Table -->
+            <div>
+                <h2 class="section-title">💬 Frases Comunes (Useful Phrases)</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Spanish</th>
+                                <th>Pronunciation</th>
+                                <th>English</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="td-spanish" style="color:#e74c3c;">Hola</td>
+                                <td>/oh-lah/</td>
+                                <td>Hello</td>
+                            </tr>
+                            <tr>
+                                <td class="td-spanish" style="color:#f1c40f;">Buenos días</td>
+                                <td>/bweh-nohs deeh-ahs/</td>
+                                <td>Good morning</td>
+                            </tr>
+                            <tr>
+                                <td class="td-spanish">¿Cómo estás?</td>
+                                <td>/koh-moh ehs-tahs/</td>
+                                <td>How are you?</td>
+                            </tr>
+                            <tr>
+                                <td class="td-spanish">Gracias</td>
+                                <td>/grah-syahs/</td>
+                                <td>Thank you</td>
+                            </tr>
+                            <tr>
+                                <td class="td-spanish">Adiós</td>
+                                <td>/ah-dyohs/</td>
+                                <td>Goodbye</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Side Elements: CSS Interactive Flashcard Box -->
+            <div>
+                <h2 class="section-title">🧠 Interactive Tester</h2>
+                <div class="flashcard-box">
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Click and **hold down** on the card below to reveal the English meaning!</p>
+                    
+                    <div class="card-container" tabindex="0">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3 style="font-size: 1.8rem;">¿Cuánto cuesta?</h3>
+                                <span class="hint-text">Tap/Hold to flip</span>
+                            </div>
+                            <div class="card-back">
+                                <h3 style="font-size: 1.6rem; color: var(--accent-gold);">How much does it cost?</h3>
+                                <span class="hint-text">Release to hide</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
