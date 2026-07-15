@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineMasterpiece | Best Movies of All Time</title>
+    <style>
+        /* Modern Reset and Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bg-color: #0f0f13;
+            --card-bg: #1a1a24;
+            --accent-color: #ff3838;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b0;
+            --rating-color: #f1c40f;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, rgba(255,56,56,0.1) 0%, rgba(15,15,19,0) 100%);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            color: var(--accent-color);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Movies Grid Layout */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        /* Movie Card Styling */
+        .movie-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 1px 1px var(--accent-color);
+        }
+
+        /* Card Visual Header Placeholder */
+        .movie-banner {
+            height: 180px;
+            background: linear-gradient(45deg, #111, #222);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        /* Specific banner gradients for flair */
+        .card-1 .movie-banner { background: linear-gradient(135deg, #2c3e50, #000000); }
+        .card-2 .movie-banner { background: linear-gradient(135deg, #1e130c, #9a8478); }
+        .card-3 .movie-banner { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+        .card-4 .movie-banner { background: linear-gradient(135deg, #3a1c1c, #080707); }
+
+        /* Movie Content Details */
+        .movie-details {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .genre-badge {
+            align-self: flex-start;
+            background-color: rgba(255, 56, 56, 0.15);
+            color: var(--accent-color);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .movie-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .movie-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rating {
+            color: var(--rating-color);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .movie-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* Button Link */
+        .btn-trailer {
+            display: block;
+            text-align: center;
+            background-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-trailer:hover {
+            background-color: var(--text-main);
+            color: var(--bg-color);
+            border-color: var(--text-main);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Cinema<span>Elite</span></h1>
+        <p>A curated compilation of universally acclaimed cinematic masterpieces that defined generations of storytelling.</p>
+    </header>
+
+    <main class="container">
+        <div class="movie-grid">
+            
+            <!-- Movie 1 -->
+            <div class="movie-card card-1">
+                <div class="movie-banner">🕶️</div>
+                <div class="movie-details">
+                    <span class="genre-badge">Sci-Fi / Action</span>
+                    <h2 class="movie-title">The Matrix</h2>
+                    <div class="movie-meta">
+                        <span>1999</span>
+                        <span>•</span>
+                        <span>2h 16m</span>
+                        <span>•</span>
+                        <span class="rating">★ 8.7</span>
+                    </div>
+                    <p class="movie-desc">When a beautiful stranger leads computer hacker Neo to a forbidding underworld, he discovers the shocking truth--the life he knows is the elaborate deception of an evil cyber-intelligence.</p>
+                    <a href="https://www.youtube.com/results?search_query=The+Matrix+1999+Official+Trailer" target="_blank" class="btn-trailer">Search Trailer</a>
+                </div>
+            </div>
+
+            <!-- Movie 2 -->
+            <div class="movie-card card-2">
+                <div class="movie-banner">🌹</div>
+                <div class="movie-details">
+                    <span class="genre-badge">Crime / Drama</span>
+                    <h2 class="movie-title">The Godfather</h2>
+                    <div class="movie-meta">
+                        <span>1972</span>
+                        <span>•</span>
+                        <span>2h 55m</span>
+                        <span>•</span>
+                        <span class="rating">★ 9.2</span>
+                    </div>
+                    <p class="movie-desc">The aging patriarch of an organized crime dynasty in postwar New York City transfers control of his clandestine empire to his reluctant youngest son.</p>
+                    <a href="https://www.youtube.com/results?search_query=The+Godfather+1972+Official+Trailer" target="_blank" class="btn-trailer">Search Trailer</a>
+                </div>
+            </div>
+
+            <!-- Movie 3 -->
+            <div class="movie-card card-3">
+                <div class="movie-banner">🌀</div>
+                <div class="movie-details">
+                    <span class="genre-badge">Sci-Fi / Thriller</span>
+                    <h2 class="movie-title">Inception</h2>
+                    <div class="movie-meta">
+                        <span>2010</span>
+                        <span>•</span>
+                        <span>2h 28m</span>
+                        <span>•</span>
+                        <span class="rating">★ 8.8</span>
+                    </div>
+                    <p class="movie-desc">A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.</p>
+                    <a href="https://www.youtube.com/results?search_query=Inception+2010+Official+Trailer" target="_blank" class="btn-trailer">Search Trailer</a>
+                </div>
+            </div>
+
+            <!-- Movie 4 -->
+            <div class="movie-card card-4">
+                <div class="movie-banner">🦇</div>
+                <div class="movie-details">
+                    <span class="genre-badge">Action / Drama</span>
+                    <h2 class="movie-title">The Dark Knight</h2>
+                    <div class="movie-meta">
+                        <span>2008</span>
+                        <span>•</span>
+                        <span>2h 32m</span>
+                        <span>•</span>
+                        <span class="rating">★ 9.0</span>
+                    </div>
+                    <p class="movie-desc">When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.</p>
+                    <a href="https://www.youtube.com/results?search_query=The+Dark+Knight+2008+Official+Trailer" target="_blank" class="btn-trailer">Search Trailer</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 CineElite Showcase. Built with HTML & CSS.</p>
+    </footer>
+
+</body>
+</html>
