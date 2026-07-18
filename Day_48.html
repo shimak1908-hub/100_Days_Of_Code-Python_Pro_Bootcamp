@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Cookie Clicker Engine</title>
+    <style>
+        /* Modern System Variables & Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            user-select: none;
+        }
+
+        :root {
+            --bg-base: #0f0c1b;
+            --bg-surface: #19142d;
+            --bg-panel: #221c3d;
+            --accent-gold: #ffb703;
+            --accent-cyan: #00f2fe;
+            --text-main: #ffffff;
+            --text-muted: #9a92bf;
+            --border-glow: rgba(0, 242, 254, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Status Counter Panel */
+        header {
+            text-align: center;
+            padding: 30px 24px;
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px rgba(255, 183, 3, 0.3);
+            line-height: 1.1;
+        }
+
+        .cps-display {
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* Workspace Grid Structure Layout */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            flex-grow: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+            .upgrades-panel {
+                border-left: none !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        /* Left Side: Clicker Target Arena Zone */
+        .click-arena {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 40px;
+        }
+
+        .giant-cookie-node {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, #8a5a36 0%, #5c3a21 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset -15px -15px 30px rgba(0,0,0,0.4);
+            border: 8px solid #422815;
+            transition: transform 0.05s ease;
+        }
+
+        .giant-cookie-node:hover {
+            transform: scale(1.03);
+        }
+
+        .giant-cookie-node:active {
+            transform: scale(0.95);
+        }
+
+        /* Floating text effects on direct mouse click action triggers */
+        .click-pop-label {
+            position: absolute;
+            color: var(--accent-gold);
+            font-weight: 800;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(0.8); }
+        }
+
+        /* Right Side: Store Market Panel */
+        .upgrades-panel {
+            background-color: var(--bg-surface);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--bg-panel);
+            padding-bottom: 10px;
+        }
+
+        /* Individual Upgrade Line Row Component */
+        .upgrade-row {
+            background-color: var(--bg-panel);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upgrade-row:hover {
+            border-color: var(--accent-cyan);
+            background-color: #2b234d;
+        }
+
+        .upgrade-row.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: transparent !important;
+            background-color: var(--bg-panel) !important;
+        }
+
+        .upgrade-meta h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .upgrade-meta p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .upgrade-cost {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .owned-badge {
+            font-size: 0.75rem;
+            background-color: rgba(0, 242, 254, 0.15);
+            color: var(--accent-cyan);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Score Header Dashboard -->
+    <header>
+        <div class="score-display" id="cookieCount">0 Cookies</div>
+        <div class="cps-display" id="cpsCount">per second: 0.0</div>
+    </header>
+
+    <!-- Core Layout Grid Frame -->
+    <main class="game-layout">
+        
+        <!-- Left click interaction area -->
+        <section class="click-arena" id="arena">
+            <div class="giant-cookie-node" id="cookieButton"></div>
+        </section>
+
+        <!-- Right shop upgrade catalog system layout -->
+        <section class="upgrades-panel">
+            <h3 class="panel-title">Production Upgrades</h3>
+            
+            <!-- Upgrade Item Row: Pointer -->
+            <div class="upgrade-row disabled" id="up-pointer" onclick="buyUpgrade('pointer')">
+                <div class="upgrade-meta">
+                    <h4>Auto-Clicker Pointer</h4>
+                    <p>Clicks automatically every 10 seconds (+0.1 CPS)</p>
+                </div>
+                <div class="upgrade-cost">
+                    <span id="cost-pointer">15</span>
+                    <span class="owned-badge" id="owned-pointer">0 Owned</span>
+                </div>
+            </div>
+
+            <!-- Upgrade Item Row: Grandmas -->
+            <div class="upgrade-row disabled" id="up-grandma" onclick="buyUpgrade('grandma')">
+                <div class="upgrade-meta">
+                    <h4>Grandma Kitchen</h4>
+                    <p>Bakes classic warm treats (+1.0 CPS)</p>
+                </div>
+                <div class="upgrade-cost">
+                    <span id="cost-grandma">100</span>
+                    <span class="owned-badge" id="owned-grandma">0 Owned</span>
+                </div>
+            </div>
+
+            <!-- Upgrade Item Row: Factory -->
+            <div class="upgrade-row disabled" id="up-factory" onclick="buyUpgrade('factory')">
+                <div class="upgrade-meta">
+                    <h4>Industrial Factory</h4>
+                    <p>Mass production lines (+8.0 CPS)</p>
+                </div>
+                <div class="upgrade-cost">
+                    <span id="cost-factory">1,100</span>
+                    <span class="owned-badge" id="owned-factory">0 Owned</span>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Game Engine State Logic -->
+    <script>
+        // Primary Global Data State Machine 
+        let state = {
+            cookies: 0,
+            cps: 0.0,
+            upgrades: {
+                pointer: { count: 0, baseCost: 15, currentCost: 15, power: 0.1 },
+                grandma: { count: 0, baseCost: 100, currentCost: 100, power: 1.0 },
+                factory: { count: 0, baseCost: 1100, currentCost: 1100, power: 8.0 }
+            }
+        };
+
+        const cookieButton = document.getElementById('cookieButton');
+        const arena = document.getElementById('arena');
+
+        // Direct user mouse click interaction vector handler
+        cookieButton.addEventListener('click', (e) => {
+            state.cookies += 1;
+            spawnFloatingLabel(e.clientX, e.clientY, "+1");
+            syncDashboardUI();
+        });
+
+        // Spawn dynamic visual numbers at pointer coordinates
+        function spawnFloatingLabel(x, y, text) {
+            const label = document.createElement('div');
+            label.className = 'click-pop-label';
+            label.innerText = text;
+            
+            // Map click bounds relatively onto parent viewport workspace
+            const rect = arena.getBoundingClientRect();
+            label.style.left = `${x - rect.left}px`;
+            label.style.top = `${y - rect.top}px`;
+            
+            arena.appendChild(label);
+            setTimeout(() => label.remove(), 600);
+        }
+
+        // Purchase structure transactional math handler
+        function buyUpgrade(type) {
+            let item = state.upgrades[type];
+            if (state.cookies >= item.currentCost) {
+                state.cookies -= item.currentCost;
+                item.count++;
+                
+                // Exponential price scaling equation pattern (1.15x base price scale multiplier)
+                item.currentCost = Math.ceil(item.baseCost * Math.pow(1.15, item.count));
+                
+                recalculatePassiveCps();
+                syncDashboardUI();
+            }
+        }
+
+        // Aggregate system power values 
+        function recalculatePassiveCps() {
+            let totalCps = 0.0;
+            for (let key in state.upgrades) {
+                totalCps += state.upgrades[key].count * state.upgrades[key].power;
+            }
+            state.cps = parseFloat(totalCps.toFixed(1));
+        }
+
+        // Engine loop state renderer logic updates
+        function syncDashboardUI() {
+            document.getElementById('cookieCount').innerText = `${Math.floor(state.cookies)} Cookies`;
+            document.getElementById('cpsCount').innerText = `per second: ${state.cps.toFixed(1)}`;
+
+            // Dynamically manage disabled attribute states and update card costs
+            for (let key in state.upgrades) {
+                let item = state.upgrades[key];
+                const element = document.getElementById(`up-${key}`);
+                document.getElementById(`cost-${key}`).innerText = item.currentCost.toLocaleString();
+                document.getElementById(`owned-${key}`).innerText = `${item.count} Owned`;
+
+                if (state.cookies >= item.currentCost) {
+                    element.classList.remove('disabled');
+                } else {
+                    element.classList.add('disabled');
+                }
+            }
+        }
+
+        // Central High-Precision Passive Automation Frame Tick (Renders loops at 30Hz)
+        const frameInterval = 1000 / 30; 
+        setInterval(() => {
+            if (state.cps > 0) {
+                state.cookies += (state.cps / 30);
+                syncDashboardUI();
+            }
+        }, frameInterval);
+    </script>
+</body>
+</html>

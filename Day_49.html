@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Up | Fitness Routine Automator</title>
+    <style>
+        /* System Variables & Core Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-base: #0b0f19;
+            --bg-surface: #131a26;
+            --bg-card: #1c2635;
+            --accent-neon: #00f2fe;
+            --accent-purple: #7000ff;
+            --accent-xp: #2ecc71;
+            --text-main: #ffffff;
+            --text-muted: #8fa0b5;
+            --border-line: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+
+        /* Top Hero Profile Section */
+        header {
+            background: linear-gradient(135deg, var(--bg-surface) 0%, #1a153a 100%);
+            padding: 30px 24px;
+            border-bottom: 1px solid var(--border-line);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-rank {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .user-rank span {
+            color: var(--accent-neon);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Character XP Progress Bar */
+        .xp-bar-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.05);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-line);
+            position: relative;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            width: 0%; /* Managed dynamically by state engine */
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-xp));
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+        }
+
+        .xp-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Main Workspace Content Layout */
+        main {
+            max-width: 1000px;
+            margin: 35px auto 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Workout Automation Interactive Deck Grid */
+        .routine-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Exercise Deck Item Card */
+        .exercise-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .exercise-card:hover {
+            border-color: rgba(0, 242, 254, 0.3);
+            transform: translateX(4px);
+        }
+
+        .exercise-info h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .exercise-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .xp-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            background-color: rgba(46, 204, 113, 0.12);
+            color: var(--accent-xp);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        /* Fast Action Trigger Complete Button */
+        .complete-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--border-line);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .complete-btn:hover {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
+        }
+
+        .complete-btn:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Character Status & XP Overview HUD -->
+    <header>
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="user-rank">Character Level: <span id="lvlLabel">1</span></div>
+                <div class="xp-text" id="xpLabel">0 / 100 XP</div>
+            </div>
+            
+            <div class="xp-bar-container">
+                <div class="xp-bar-fill" id="xpBar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Workout Program Automation Center -->
+    <main>
+        <h2 class="section-title">Today's Automated Routine</h2>
+        
+        <div class="routine-grid">
+            
+            <!-- Routine Node: Push-ups Tracking Frame -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Push-ups Set <span class="xp-badge">+25 XP</span></h3>
+                    <p>Target: 3 Sets x 15 Reps — Focus on explosive form</p>
+                </div>
+                <button class="complete-btn" onclick="awardXp(25)">Complete Set</button>
+            </div>
+
+            <!-- Routine Node: Squats Tracking Frame -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Bodyweight Squats <span class="xp-badge">+30 XP</span></h3>
+                    <p>Target: 3 Sets x 20 Reps — Keep hips back and deep depth</p>
+                </div>
+                <button class="complete-btn" onclick="awardXp(30)">Complete Set</button>
+            </div>
+
+            <!-- Routine Node: Plank Tracking Frame -->
+            <div class="exercise-card">
+                <div class="exercise-info">
+                    <h3>Core Plank Hold <span class="xp-badge">+40 XP</span></h3>
+                    <p>Target: 60 Seconds isometric hold — Solid flat spine line</p>
+                </div>
+                <button class="complete-btn" onclick="awardXp(40)">Complete Hold</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Core State Machine Logic Engine -->
+    <script>
+        // Central Player Progress State Initialization
+        let playerState = {
+            level: 1,
+            currentXp: 0,
+            xpNeeded: 100
+        };
+
+        // Transactional State Modifier Rule
+        function awardXp(amount) {
+            playerState.currentXp += amount;
+            
+            // Check for level expansion milestones
+            while (playerState.currentXp >= playerState.xpNeeded) {
+                playerState.currentXp -= playerState.xpNeeded;
+                playerState.level += 1;
+                // Scale difficulty exponentially: increase required XP per level
+                playerState.xpNeeded = Math.ceil(playerState.xpNeeded * 1.2);
+                
+                triggerLevelAnimation();
+            }
+            
+            renderHudUpdates();
+        }
+
+        function triggerLevelAnimation() {
+            const label = document.getElementById('lvlLabel');
+            label.style.color = '#2ecc71';
+            setTimeout(() => {
+                label.style.color = 'var(--accent-neon)';
+            }, 500);
+        }
+
+        // Render Dynamic Math Values back to Dashboard Elements
+        function renderHudUpdates() {
+            const percent = (playerState.currentXp / playerState.xpNeeded) * 100;
+            
+            document.getElementById('lvlLabel').innerText = playerState.level;
+            document.getElementById('xpLabel').innerText = `${playerState.currentXp} / ${playerState.xpNeeded} XP`;
+            document.getElementById('xpBar').style.width = `${percent}%`;
+        }
+
+        // Initialize state view defaults on mount
+        renderHudUpdates();
+    </script>
+</body>
+</html>

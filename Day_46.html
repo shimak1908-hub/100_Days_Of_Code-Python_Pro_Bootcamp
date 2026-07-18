@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musical Time Machine | Retro Streaming Dashboard</title>
+    <style>
+        /* Modern System Reset & Core Design Tokens */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-base: #07060b;
+            --bg-surface: #12101a;
+            --bg-card: #1b1829;
+            --accent-neon: #00f2fe;
+            --accent-magenta: #ff007f;
+            --text-main: #ffffff;
+            --text-muted: #8c889e;
+            --border-glow: rgba(0, 242, 254, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Branding Header */
+        header {
+            text-align: center;
+            padding: 60px 24px 30px 24px;
+            background: linear-gradient(180deg, rgba(255, 0, 127, 0.08) 0%, transparent 100%);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            background: linear-gradient(45deg, #ffffff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header h1 span {
+            background: linear-gradient(45deg, var(--accent-neon), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* Decades Timeline Navigation Controller Component */
+        .timeline-wrapper {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 24px;
+        }
+
+        .timeline-track {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--bg-surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .decade-node {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .decade-node:hover {
+            color: var(--text-main);
+        }
+
+        .decade-node.active {
+            color: var(--bg-base);
+            background: linear-gradient(45deg, var(--accent-neon), var(--accent-magenta));
+            font-weight: 800;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Core Panel Workspace Layout */
+        .dashboard-content {
+            max-width: 1000px;
+            margin: 40px auto 0 auto;
+            padding: 0 24px;
+        }
+
+        .decade-intro {
+            margin-bottom: 25px;
+            border-left: 3px solid var(--accent-neon);
+            padding-left: 15px;
+        }
+
+        .decade-intro h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .decade-intro p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Track Card Responsive Grid */
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .track-card {
+            background-color: var(--bg-surface);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .track-card:hover {
+            background-color: var(--bg-card);
+            transform: scale(1.03);
+            border-color: var(--border-glow);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.1);
+        }
+
+        /* Vinyl Art Placeholder Simulation styling */
+        .album-art-sim {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2c273e 0%, #0c0a12 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        /* Inner glowing circle simulating a record vinyl core center hole */
+        .album-art-sim::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background-color: var(--bg-base);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .track-details {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .track-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .track-artist {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .play-indicator {
+            margin-left: auto;
+            color: var(--accent-neon);
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .track-card:hover .play-indicator {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Musical <span>Time Machine</span></h1>
+        <p>Dial back the decades. Select an era to instantly warp your dashboard playlist into the hallmark audio textures of the past.</p>
+    </header>
+
+    <!-- Timeline Decade Selection Bar -->
+    <nav class="timeline-wrapper">
+        <div class="timeline-track">
+            <button class="decade-node" onclick="shiftDecade(this, '70s')">1970s</button>
+            <button class="decade-node" onclick="shiftDecade(this, '80s')">1980s</button>
+            <button class="decade-node active" onclick="shiftDecade(this, '90s')">1990s</button>
+            <button class="decade-node" onclick="shiftDecade(this, '00s')">2000s</button>
+            <button class="decade-node" onclick="shiftDecade(this, '10s')">2010s</button>
+        </div>
+    </nav>
+
+    <!-- Playlist Track Container Panel -->
+    <main class="dashboard-content">
+        
+        <div class="decade-intro">
+            <h2 id="eraTitle">The Golden 90s Block</h2>
+            <p id="eraDesc">Raw alternative rock grunge, peak golden-era hip hop beats, and pristine pop music anthems.</p>
+        </div>
+
+        <div id="playlistGrid" class="playlist-grid">
+            <!-- Populated via Javascript engine dynamically mapping states -->
+        </div>
+
+    </main>
+
+    <!-- Interactive Client Audio Data State Engine -->
+    <script>
+        // Decade Song Dataset Structure
+        const timeMachineDatabase = {
+            "70s": {
+                title: "The Groovy 1970s",
+                desc: "Classic vinyl gold, disco floor-burners, funk grooves, and stadium rock architecture.",
+                tracks: [
+                    { title: "Stayin' Alive", artist: "Bee Gees" },
+                    { title: "Go Your Own Way", artist: "Fleetwood Mac" },
+                    { title: "Bohemian Rhapsody", artist: "Queen" },
+                    { title: "Superstition", artist: "Stevie Wonder" }
+                ]
+            },
+            "80s": {
+                title: "The Neon 1980s",
+                desc: "Vintage synthesizer tracks, big hair stadium anthems, new wave pop, and early electronic drum loops.",
+                tracks: [
+                    { title: "Blue Monday", artist: "New Order" },
+                    { title: "Billie Jean", artist: "Michael Jackson" },
+                    { title: "Sweet Child O' Mine", artist: "Guns N' Roses" },
+                    { title: "Take On Me", artist: "a-ha" }
+                ]
+            },
+            "90s": {
+                title: "The Golden 1990s",
+                desc: "Raw alternative rock grunge, peak golden-era hip hop beats, and pristine pop music anthems.",
+                tracks: [
+                    { title: "Smells Like Teen Spirit", artist: "Nirvana" },
+                    { title: "Hypnotize", artist: "The Notorious B.I.G." },
+                    { title: "Say My Name", artist: "Destiny's Child" },
+                    { title: "Wonderwall", artist: "Oasis" }
+                ]
+            },
+            "00s": {
+                title: "The Millennium 2000s",
+                desc: "Indie rock revivals, early digital club bangers, pop-punk anthems, and multi-platinum R&B.",
+                tracks: [
+                    { title: "Mr. Brightside", artist: "The Killers" },
+                    { title: "Crazy In Love", artist: "Beyoncé ft. Jay-Z" },
+                    { title: "Seven Nation Army", artist: "The White Stripes" },
+                    { title: "In Da Club", artist: "50 Cent" }
+                ]
+            },
+            "10s": {
+                title: "The Modern 2010s",
+                desc: "Streaming global hits, synthetic dance music explosions, indie-pop curation, and trap music blueprints.",
+                tracks: [
+                    { title: "Blinding Lights", artist: "The Weeknd" },
+                    { title: "Get Lucky", artist: "Daft Punk ft. Pharrell" },
+                    { title: "Shape of You", artist: "Ed Sheeran" },
+                    { title: "Royals", artist: "Lorde" }
+                ]
+            }
+        };
+
+        // Method to switch UI display cards based on targeted epoch selection
+        function shiftDecade(buttonElement, chosenDecade) {
+            // Remove active classes from all nodes
+            document.querySelectorAll('.decade-node').forEach(node => node.classList.remove('active'));
+            // Highlight current clicked node selection target
+            buttonElement.classList.add('active');
+
+            const segment = timeMachineDatabase[chosenDecade];
+            
+            // Alter Text Meta Details
+            document.getElementById('eraTitle').innerText = segment.title;
+            document.getElementById('eraDesc').innerText = segment.desc;
+
+            // Clear layout grid space completely
+            const grid = document.getElementById('playlistGrid');
+            grid.innerHTML = "";
+
+            // Loop construct building custom DOM cards elements securely
+            segment.tracks.forEach(track => {
+                const card = document.createElement('div');
+                card.className = 'track-card';
+                card.onclick = () => alert(`Loading "${track.title}" inside the time machine warp deck...`);
+
+                card.innerHTML = `
+                    <div class="album-art-sim">🎵</div>
+                    <div class="track-details">
+                        <div class="track-title">${track.title}</div>
+                        <div class="track-artist">${track.artist}</div>
+                    </div>
+                    <div class="play-indicator">▶</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Standard setup invocation initialization (renders 90s first row default)
+        window.onload = function() {
+            const initialTarget = document.querySelector('.decade-node.active');
+            shiftDecade(initialTarget, '90s');
+        };
+    </script>
+</body>
+</html>

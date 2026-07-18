@@ -1,0 +1,95 @@
+import asyncio
+import random
+import os
+from playwright.async_api import async_playwright
+
+# --- CONFIGURATION SETTINGS ---
+TARGET_URL = "https://tinder.com"
+
+# Using a local directory folder named 'tinder_profile' to save your login session cookies
+PROFILE_DIR = os.path.join(os.getcwd(), "tinder_profile")
+
+# Selectors matching modern data-testids and structural buttons
+LIKE_BUTTON_SELECTOR = "[data-testid='gamepad-like'], button:has-text('Like')"
+DISLIKE_BUTTON_SELECTOR = "[data-testid='gamepad-nope'], button:has-text('Nope')"
+
+
+async def run_swiping_loop(page):
+    """Loops through matching interactions with natural, dynamic delays."""
+    print("\n[System] Initializing swiping automation sequence...")
+    print("[Control] Press Ctrl+C in the terminal to safely abort at any time.\n")
+    
+    swipes_completed = 0
+    
+    while True:
+        try:
+            # 1. Wait for either the like button or profile layout cards to safely load
+            await page.wait_for_selector(LIKE_BUTTON_SELECTOR, timeout=12000)
+            
+            # 2. Dynamic Human Pacing: Variable intervals between 1.5 and 4.2 seconds
+            delay = random.uniform(1.5, 4.2)
+            await asyncio.sleep(delay)
+            
+            # 3. Simulate Choice Variance: 80% Right (Like), 20% Left (Nope)
+            swipe_right = random.random() < 0.80
+            
+            if swipe_right:
+                print(f"Action #{swipes_completed + 1}: Swiping Right (Like) | Pacing Delay: {delay:.2f}s")
+                await page.click(LIKE_BUTTON_SELECTOR)
+            else:
+                print(f"Action #{swipes_completed + 1}: Swiping Left (Nope) | Pacing Delay: {delay:.2f}s")
+                await page.click(DISLIKE_BUTTON_SELECTOR)
+                
+            swipes_completed += 1
+            
+        except Exception as error:
+            # Handles unexpected blocking popups (like "Enable Notifications" or temporary matches)
+            print("[Warning] Viewport target obstructed or loading slow. Attempting to clear overlays...")
+            await asyncio.sleep(3.0)
+            
+            # Auto-dismiss modal dialogs if they pop up on your screen
+            try:
+                for close_text in ["Maybe Later", "Not Interested", "Close", "Back to Swiping"]:
+                    btn_selector = f"button:has-text('{close_text}')"
+                    if await page.is_visible(btn_selector, timeout=500):
+                        await page.click(btn_selector)
+                        print(f"[System] Dismissed overlay panel via token button: '{close_text}'")
+            except Exception:
+                pass
+
+
+async def main():
+    async with async_playwright() as p:
+        print(f"[Storage] Booting profile instance via path location: {PROFILE_DIR}")
+        
+        # Launch using launch_persistent_context to retain login sessions across executions
+        context = await p.chromium.launch_persistent_context(
+            user_data_dir=PROFILE_DIR,
+            headless=False,
+            viewport={'width': 1280, 'height': 850},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--start-maximized"
+            ]
+        )
+        
+        page = context.pages[0] if context.pages else await context.new_page()
+        await page.goto(TARGET_URL)
+        
+        # Checking if you are already logged in via stored cookie validation folders
+        print("\n" + "="*60)
+        print("💡 TIP: If you see your main discovery feed immediately, you are good to go!")
+        print("Otherwise, complete your manual login now, and it will remember you next time.")
+        print("="*60 + "\n")
+        
+        input("Press ENTER in this terminal window once your web interface is open and ready to run...")
+        
+        await run_swiping_loop(page)
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n[System] Automation routine safely halted by user termination.")
