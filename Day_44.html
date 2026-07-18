@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambition Gallery | Minimalist Motivational Art</title>
+    <style>
+        /* Modern CSS Variables & Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-base: #0a0a0c;
+            --bg-surface: #121216;
+            --accent-gold: #d4af37;
+            --accent-blue: #3498db;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        /* Hero Header Section */
+        header {
+            text-align: center;
+            padding: 80px 20px 40px 20px;
+            background: radial-gradient(circle at top, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        header h1 span {
+            color: var(--accent-gold);
+            font-weight: 300;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+        }
+
+        /* Navigation Filter Links */
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            color: var(--text-primary);
+            border-color: var(--accent-gold);
+            background-color: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Main Gallery Container Layout */
+        .gallery-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .poster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 35px;
+            margin-top: 30px;
+        }
+
+        /* Premium Poster Card Design */
+        .poster-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease;
+        }
+
+        .poster-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        /* Conceptual Canvas Art Space (Replacing broken external URLs) */
+        .poster-canvas {
+            height: 380px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        /* Unique Gradients for Art Aesthetics */
+        .art-discipline { background: linear-gradient(135deg, #141419 0%, #050508 100%); }
+        .art-focus { background: linear-gradient(135deg, #111625 0%, #070910 100%); }
+        .art-resilience { background: linear-gradient(135deg, #221215 0%, #0a0506 100%); }
+        .art-momentum { background: linear-gradient(135deg, #161a14 0%, #090b08 100%); }
+
+        /* Typography Inside the Poster Artwork */
+        .poster-keyword {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        /* Gold highlight rule lines inside posters */
+        .poster-canvas::after {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent-gold);
+            margin: 5px 0 20px 0;
+        }
+
+        .poster-quote {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #d1d1d6;
+            max-width: 260px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* Card Bottom Metadata Labels */
+        .poster-meta {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .poster-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+            background-color: rgba(212, 175, 55, 0.08);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .action-download {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .action-download:hover {
+            color: var(--text-primary);
+        }
+
+        /* Footer Copyright Block */
+        footer {
+            text-align: center;
+            margin-top: 100px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ambition<span>Gallery</span></h1>
+        <p>High-resolution minimalist typography prints calculated to re-align focus and internal drive.</p>
+        
+        <!-- Interactive Category Selectors Layout -->
+        <div class="filter-nav">
+            <button class="filter-btn active">All Pillars</button>
+            <button class="filter-btn">Mindset</button>
+            <button class="filter-btn">Execution</button>
+            <button class="filter-btn">Sovereignty</button>
+        </div>
+    </header>
+
+    <main class="gallery-container">
+        <div class="poster-grid">
+            
+            <!-- Poster Card 1 -->
+            <div class="poster-card">
+                <div class="poster-canvas art-discipline">
+                    <div class="poster-keyword">DISCIPLINE</div>
+                    <p class="poster-quote">"Choosing between what you want now and what you want most."</p>
+                </div>
+                <div class="poster-meta">
+                    <span class="poster-tag">Execution</span>
+                    <a href="#" class="action-download" onclick="alert('Download triggered for 4K Wallpaper asset!')">💾 Get Print</a>
+                </div>
+            </div>
+
+            <!-- Poster Card 2 -->
+            <div class="poster-card">
+                <div class="poster-canvas art-focus">
+                    <div class="poster-keyword" style="color: #3498db;">FOCUS</div>
+                    <p class="poster-quote">"Starve your distractions. Feed your focus."</p>
+                </div>
+                <div class="poster-meta">
+                    <span class="poster-tag">Mindset</span>
+                    <a href="#" class="action-download" onclick="alert('Download triggered for 4K Wallpaper asset!')">💾 Get Print</a>
+                </div>
+            </div>
+
+            <!-- Poster Card 3 -->
+            <div class="poster-card">
+                <div class="poster-canvas art-resilience">
+                    <div class="poster-keyword" style="color: #e74c3c;">GRIT</div>
+                    <p class="poster-quote">"The capability to push through when execution ceases to be exciting."</p>
+                </div>
+                <div class="poster-meta">
+                    <span class="poster-tag">Sovereignty</span>
+                    <a href="#" class="action-download" onclick="alert('Download triggered for 4K Wallpaper asset!')">💾 Get Print</a>
+                </div>
+            </div>
+
+            <!-- Poster Card 4 -->
+            <div class="poster-card">
+                <div class="poster-canvas art-momentum">
+                    <div class="poster-keyword" style="color: #2ecc71;">MOMENTUM</div>
+                    <p class="poster-quote">"Amateurs wait for inspiration. Professionals sit down and clear the board."</p>
+                </div>
+                <div class="poster-meta">
+                    <span class="poster-tag">Execution</span>
+                    <a href="#" class="action-download" onclick="alert('Download triggered for 4K Wallpaper asset!')">💾 Get Print</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ambition Gallery Inc. Designed for pure execution efficiency.</p>
+    </footer>
+
+</body>
+</html>
