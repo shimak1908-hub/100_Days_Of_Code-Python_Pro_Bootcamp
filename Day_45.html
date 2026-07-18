@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate 100 Movies Bucket List</title>
+    <style>
+        /* Modern System Reset & Core Variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-base: #09090e;
+            --bg-surface: #13131a;
+            --accent-gold: #f1c40f;
+            --accent-cyan: #00f2fe;
+            --text-main: #ffffff;
+            --text-muted: #8a8e99;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --card-completed: rgba(0, 242, 254, 0.03);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* Sticky Dashboard Progress Bar Header */
+        .progress-banner {
+            position: sticky;
+            top: 0;
+            background-color: rgba(19, 19, 26, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 20px 0;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .progress-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .progress-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .progress-text span {
+            color: var(--accent-cyan);
+        }
+
+        .bar-wrapper {
+            flex-grow: 1;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 0%; /* Managed dynamically by JavaScript */
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan));
+            border-radius: 6px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Main Hero Page Branding */
+        header.main-header {
+            text-align: center;
+            padding: 60px 24px 30px 24px;
+        }
+
+        header.main-header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            background: linear-gradient(45deg, #ffffff, #a3a3a3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header.main-header h1 span {
+            background: linear-gradient(45deg, var(--accent-gold), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header.main-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Category Grid Sections */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            padding: 0 24px;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 40px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--accent-gold);
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+        }
+
+        /* Movie Responsive Layout Grid */
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Elegant Interactive Movie Card structure */
+        .movie-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.25s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+
+        /* Completed State Modification via Checklist Trigger */
+        .movie-card.watched {
+            background-color: var(--card-completed);
+            border-color: rgba(0, 242, 254, 0.2);
+        }
+
+        .movie-card.watched .movie-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* Checkbox Controller Mechanics */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .movie-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-muted);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .movie-card.watched .custom-checkbox {
+            background-color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+        }
+
+        .custom-checkbox::after {
+            content: '✓';
+            color: var(--bg-base);
+            font-weight: 900;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .movie-card.watched .custom-checkbox::after {
+            display: block;
+        }
+
+        /* Movie Text details */
+        .movie-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            transition: color 0.2s;
+        }
+
+        .movie-meta {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .movie-meta span {
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 6px;
+        }
+
+        .movie-plot {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Sticky Dynamic Progress Monitor -->
+    <div class="progress-banner">
+        <div class="progress-container">
+            <div class="progress-text">Your Progress: <span id="progressCount">0</span> / 100 Watched</div>
+            <div class="bar-wrapper">
+                <div id="progressBar" class="bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Title Header Branding -->
+    <header class="main-header">
+        <h1>The Ultimate <span>100 Movies</span> Bucket List</h1>
+        <p>The definitive checklist of cinematic history milestones, game-changing masterpieces, and essential modern stories you need to experience.</p>
+    </header>
+
+    <!-- Main Content Core -->
+    <main class="content-wrapper">
+        
+        <!-- Category Segment: Sci-Fi & Pillars -->
+        <h2 class="category-title">🎬 Sci-Fi & Cinematic Masterpieces</h2>
+        <div class="movie-grid">
+            
+            <!-- Movie Item 1 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#001</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">Interstellar</h3>
+                <div class="movie-meta">2014 <span>• 2h 49m</span></div>
+                <p class="movie-plot">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival across cosmic scale boundaries.</p>
+            </div>
+
+            <!-- Movie Item 2 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#002</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">Inception</h3>
+                <div class="movie-meta">2010 <span>• 2h 28m</span></div>
+                <p class="movie-plot">A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea.</p>
+            </div>
+
+            <!-- Movie Item 3 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#003</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">The Matrix</h3>
+                <div class="movie-meta">1999 <span>• 2h 16m</span></div>
+                <p class="movie-plot">When a computer hacker learns shocking truths about his simulated reality, he joins an underground rebellion against cyber intelligence control grids.</p>
+            </div>
+
+        </div>
+
+        <!-- Category Segment: Crime & Drama -->
+        <h2 class="category-title">🌹 Legendary Dramas & Crime</h2>
+        <div class="movie-grid">
+
+            <!-- Movie Item 4 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#004</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">The Godfather</h3>
+                <div class="movie-meta">1972 <span>• 2h 55m</span></div>
+                <p class="movie-plot">The aging patriarch of an organized crime dynasty transfers control of his empire to his deeply reluctant youngest son.</p>
+            </div>
+
+            <!-- Movie Item 5 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#005</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">The Dark Knight</h3>
+                <div class="movie-meta">2008 <span>• 2h 32m</span></div>
+                <p class="movie-plot">When a psychopathic menace known as the Joker emerges to wreak havoc on Gotham, Batman must face his deepest personal testing trials.</p>
+            </div>
+
+            <!-- Movie Item 6 -->
+            <div class="movie-card" onclick="toggleWatched(this)">
+                <div class="card-header">
+                    <span class="movie-number">#006</span>
+                    <div class="custom-checkbox"></div>
+                </div>
+                <h3 class="movie-title">Pulp Fiction</h3>
+                <div class="movie-meta">1994 <span>• 2h 34m</span></div>
+                <p class="movie-plot">The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and dark redemption.</p>
+            </div>
+
+        </div>
+
+        <!-- Note to user: To make it a full 100, copy and paste additional grid blocks or add your favorites! -->
+
+    </main>
+
+    <!-- JavaScript Interactive State Management Engine -->
+    <script>
+        // Calculates and scales the top progress monitoring metrics
+        function updateGlobalProgress() {
+            const allMovieCards = document.querySelectorAll('.movie-card');
+            const watchedCards = document.querySelectorAll('.movie-card.watched');
+            
+            const totalCount = 100; // Hardcoded tracking base ceiling target
+            const watchedCount = watchedCards.length;
+            
+            // Calculate dynamic mathematical fill percentage ratio
+            const fillPercentage = (watchedCount / totalCount) * 100;
+            
+            // Render text updates and slide bar animation length
+            document.getElementById('progressCount').innerText = watchedCount;
+            document.getElementById('progressBar').style.width = fillPercentage + '%';
+        }
+
+        // Toggles local card target visibility and recalculates scales
+        function toggleWatched(cardElement) {
+            cardElement.classList.toggle('watched');
+            updateGlobalProgress();
+        }
+
+        // Initial setup run calculations
+        window.onload = updateGlobalProgress;
+    </script>
+</body>
+</html>
