@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Tech & Dev Blog</title>
+    <style>
+        /* CSS Variables & System Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #2d3748;
+            --accent-color: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-line: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header Layout */
+        header {
+            border-bottom: 1px solid var(--border-line);
+            padding: 24px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        /* Filter Controls & Stats Bar */
+        .controls-bar {
+            max-width: 1100px;
+            margin: 36px auto 24px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-line);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-color);
+            color: #0f172a;
+            border-color: var(--accent-color);
+        }
+
+        .post-count-badge {
+            background: var(--accent-soft);
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        /* Grid Layout for Blog Blocks */
+        .blog-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Individual Post Card Block */
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .read-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        .post-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-line);
+            padding-top: 14px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .read-more-btn {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .read-more-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design Adjustments */
+        @media (max-width: 600px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            .controls-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">⚡ Dev<span>Pulse</span></a>
+            <span style="font-size: 0.9rem; color: var(--text-secondary);">Tech, Code & Architecture</span>
+        </div>
+    </header>
+
+    <!-- Filter & Counter Section -->
+    <div class="controls-bar">
+        <div class="category-filters">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('Python')">Python</button>
+            <button class="filter-btn" onclick="filterCategory('Web Dev')">Web Dev</button>
+            <button class="filter-btn" onclick="filterCategory('Backend')">Backend</button>
+        </div>
+        <div class="post-count-badge" id="post-counter">
+            Showing 6 Posts
+        </div>
+    </div>
+
+    <!-- Main Grid Container for Blog Blocks -->
+    <main class="blog-grid" id="blog-grid-container">
+        <!-- JavaScript will populate posts here dynamically -->
+    </main>
+
+    <script>
+        // Array of Blog Posts (Data Source)
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Getting Started with Python & Playwright for Web Automation",
+                category: "Python",
+                excerpt: "Learn how to build headless browser scripts to handle web interactions, scrapers, and automated form submissions cleanly.",
+                date: "Jul 22, 2026",
+                readTime: "4 min read"
+            },
+            {
+                id: 2,
+                title: "Building Micro Web Apps with Python Flask",
+                category: "Backend",
+                excerpt: "A simple guide to URL routing, dynamic path parsing, and serving lightweight HTML directly from Python backends.",
+                date: "Jul 18, 2026",
+                readTime: "5 min read"
+            },
+            {
+                id: 3,
+                title: "Designing Glassmorphic UI Components in Modern CSS",
+                category: "Web Dev",
+                excerpt: "How to use backdrop-filter, rgba gradients, and clean borders to create soft translucent cards for web apps.",
+                date: "Jul 15, 2026",
+                readTime: "3 min read"
+            },
+            {
+                id: 4,
+                title: "Understanding Nested Logic & Control Flow in C",
+                category: "Backend",
+                excerpt: "An exploration of nested if-else structures, branch efficiency, and ladder statements in procedural programming.",
+                date: "Jul 10, 2026",
+                readTime: "6 min read"
+            },
+            {
+                id: 5,
+                title: "Mastering CSS Grid for Dynamic Layout Blocks",
+                category: "Web Dev",
+                excerpt: "Stop wrestling with flexbox math! Learn how repeat(auto-fill, minmax()) builds responsive card grids automatically.",
+                date: "Jul 05, 2026",
+                readTime: "4 min read"
+            },
+            {
+                id: 6,
+                title: "Asynchronous Python: Async/Await Explained Simply",
+                category: "Python",
+                excerpt: "How event loops handle non-blocking IO operations efficiently without complex multithreading headaches.",
+                date: "Jun 28, 2026",
+                readTime: "7 min read"
+            }
+        ];
+
+        // Function to render blog post blocks to the DOM
+        function renderPosts(postsToRender) {
+            const gridContainer = document.getElementById('blog-grid-container');
+            const counterElement = document.getElementById('post-counter');
+            
+            gridContainer.innerHTML = ''; // Clear container
+
+            if (postsToRender.length === 0) {
+                gridContainer.innerHTML = '<p style="color: var(--text-secondary); grid-column: 1/-1;">No posts found for this topic.</p>';
+            } else {
+                postsToRender.forEach(post => {
+                    const postCard = document.createElement('article');
+                    postCard.className = 'post-card';
+                    postCard.innerHTML = `
+                        <div>
+                            <div class="card-header">
+                                <span class="category-tag">${post.category}</span>
+                                <span class="read-time">${post.readTime}</span>
+                            </div>
+                            <h2 class="post-title">${post.title}</h2>
+                            <p class="post-excerpt">${post.excerpt}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span>${post.date}</span>
+                            <a href="#" class="read-more-btn">Read Article →</a>
+                        </div>
+                    `;
+                    gridContainer.appendChild(postCard);
+                });
+            }
+
+            // Update post counter text
+            counterElement.innerText = `Showing ${postsToRender.length} Post${postsToRender.length === 1 ? '' : 's'}`;
+        }
+
+        // Function to filter post blocks by category
+        function filterCategory(categoryName) {
+            // Update active state on filter buttons
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText === categoryName) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Filter logic
+            if (categoryName === 'All') {
+                renderPosts(blogPosts);
+            } else {
+                const filtered = blogPosts.filter(post => post.category === categoryName);
+                renderPosts(filtered);
+            }
+        }
+
+        // Initial render on page load
+        renderPosts(blogPosts);
+    </script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Blog - Bootstrap Edition</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom Styling to Polish Bootstrap Components */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Full Screen Hero Header for Pages and Posts */
+        .page-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 140px 0 100px 0;
+            text-align: center;
+        }
+
+        .post-header-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Post Card & Hover Effects */
+        .post-preview {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .post-preview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+        .post-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #212529;
+            text-decoration: none;
+        }
+
+        .post-title:hover {
+            color: #0d6efd;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* SPA Section Toggling */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        footer {
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Adaptive Responsive Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-link navbar-brand fw-bold fs-4" href="#" onclick="showSection('home')">
+                <i class="fa-solid fa-blog me-2"></i>DevBlog
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto text-uppercase fw-semibold">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showSection('home')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('about')">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('contact')">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: HOME PAGE -->
+    <div id="home-section" class="page-section active">
+        <header class="page-header">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 text-center">
+                        <h1 class="display-3 fw-bold">Bootstrap Blog</h1>
+                        <p class="fs-4 text-light opacity-75">A fully responsive, multi-page layout built in record time.</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <!-- Dynamic Post Feed -->
+                    <div id="posts-container">
+                        <!-- Posts injected dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: DYNAMIC POST VIEW PAGE -->
+    <div id="post-view-section" class="page-section">
+        <header class="page-header post-header-bg">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-8 text-center">
+                        <h1 id="post-view-title" class="display-4 fw-bold">Post Title</h1>
+                        <h2 id="post-view-subtitle" class="fs-4 text-light opacity-75 mt-3">Post Subtitle</h2>
+                        <p id="post-view-meta" class="post-meta text-white-50 mt-4">Posted on Date</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <article class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <p id="post-view-body" class="fs-5 leading-relaxed">Post content will render here...</p>
+                    <hr class="my-4">
+                    <button class="btn btn-outline-secondary" onclick="showSection('home')">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Back to All Posts
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- SECTION 3: ABOUT PAGE -->
+    <div id="about-section" class="page-section">
+        <header class="page-header">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-8 text-center">
+                        <h1 class="display-3 fw-bold">About Me</h1>
+                        <p class="fs-4 text-light opacity-75">This is what I do.</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <p class="fs-5">Welcome to my modernized blog! Upgrading from standard CSS to Bootstrap allows for consistent layout scaling, crisp typography, and mobile support out of the box.</p>
+                    <p class="fs-5">Whether viewed on a smartphone, tablet, or desktop screen, the adaptive navigation bar and flexible grid system ensure a smooth reading experience.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SECTION 4: CONTACT PAGE -->
+    <div id="contact-section" class="page-section">
+        <header class="page-header">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-10 col-lg-8 text-center">
+                        <h1 class="display-3 fw-bold">Contact Me</h1>
+                        <p class="fs-4 text-light opacity-75">Have questions? I have answers.</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <form id="contactForm">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="name" type="text" placeholder="Enter your name..." required>
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control" id="email" type="email" placeholder="Enter your email..." required>
+                            <label for="email">Email address</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="message" placeholder="Enter your message here..." style="height: 12rem" required></textarea>
+                            <label for="message">Message</label>
+                        </div>
+                        <button class="btn btn-primary text-uppercase py-3 px-4 fs-6 fw-bold" type="submit">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <div class="mb-3">
+                <a href="#" class="text-white mx-2 fs-4"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="text-white mx-2 fs-4"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="text-white mx-2 fs-4"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+            <p class="m-0 text-white-50 small">Copyright &copy; Clean Blog 2026</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/bootstrap.bundle.min.js"></script>
+
+    <!-- Embedded Application Logic -->
+    <script>
+        // Sample Blog Posts Dataset
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Man must explore, and this is exploration at its greatest",
+                subtitle: "Problems look mighty small from 150 miles up",
+                author: "Start Bootstrap",
+                date: "September 24, 2026",
+                body: "Never in all their history have men been able to truly appreciate the impact of worldly events until now. Spaceflight gives us a perspective that makes daily troubles seem minuscule. As we push forward into the cosmos, responsive design and modern web tools allow us to share these discoveries instantly around the world."
+            },
+            {
+                id: 2,
+                title: "I believe every human has a finite number of heartbeats",
+                subtitle: "I don't intend to waste any of mine",
+                author: "Start Bootstrap",
+                date: "September 18, 2026",
+                body: "Time is our most valuable asset. Utilizing pre-built components like Bootstrap helps developers focus on creating meaningful applications rather than repeatedly reinventing foundational layouts and responsive grids."
+            },
+            {
+                id: 3,
+                title: "Science has not yet mastered prophecy",
+                subtitle: "We predict too much for the next year and yet too little for the next ten",
+                author: "Start Bootstrap",
+                date: "August 24, 2026",
+                body: "Technology moves faster than ever. What used to take days of custom media queries can now be accomplished in minutes using responsive flexbox layouts and CSS grids."
+            }
+        ];
+
+        // Render Posts on Home Page
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = blogPosts.map(post => `
+                <div class="card p-4 mb-4 shadow-sm border-0 post-preview" onclick="openPost(${post.id})">
+                    <h2 class="post-title">${post.title}</h2>
+                    <h3 class="fs-5 text-muted fw-normal mt-1">${post.subtitle}</h3>
+                    <p class="post-meta mb-0 mt-3">Posted by ${post.author} on ${post.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // Single-Page Application (SPA) Section Switcher
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            
+            // Show target section
+            const target = document.getElementById(`${sectionId}-section`);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            // Collapse Bootstrap navbar on mobile selection
+            const navbar = document.getElementById('navbarResponsive');
+            if (navbar.classList.contains('show')) {
+                const bsCollapse = new bootstrap.Collapse(navbar);
+                bsCollapse.hide();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Open Individual Post View Dynamically
+        function openPost(postId) {
+            const post = blogPosts.find(p => p.id === postId);
+            if (post) {
+                document.getElementById('post-view-title').innerText = post.title;
+                document.getElementById('post-view-subtitle').innerText = post.subtitle;
+                document.getElementById('post-view-meta').innerText = `Posted by ${post.author} on ${post.date}`;
+                document.getElementById('post-view-body').innerText = post.body;
+                
+                showSection('post-view');
+            }
+        }
+
+        // Contact form mock submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! (Form submission simulated)');
+            this.reset();
+        });
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPosts();
+        });
+    </script>
+</body>
+</html>

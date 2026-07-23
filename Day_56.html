@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Business Card</title>
+    <style>
+        /* CSS Variables & System Resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-line: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Card Container with Glassmorphism */
+        .card-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-line);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #818cf8);
+        }
+
+        /* Profile Avatar Visual */
+        .avatar-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #818cf8);
+            padding: 3px;
+            box-shadow: 0 8px 16px rgba(56, 189, 248, 0.2);
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #0f172a;
+        }
+
+        /* Profile Details */
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .profile-title {
+            font-size: 0.95rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .profile-bio {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+
+        /* Direct Action Buttons */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #0f172a;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-line);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-full {
+            grid-column: span 2;
+        }
+
+        /* Social Links Stack */
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .social-item:hover {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateX(4px);
+        }
+
+        .social-item span {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Footer Info */
+        .footer-location {
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <!-- Profile Avatar (SVG Placeholder) -->
+        <div class="avatar-wrapper">
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style="border-radius: 50%;">
+                <rect width="100" height="100" fill="#1e293b"/>
+                <circle cx="50" cy="40" r="20" fill="#38bdf8"/>
+                <path d="M 20 85 C 20 65, 35 55, 50 55 C 65 55, 80 65, 80 85 Z" fill="#38bdf8"/>
+            </svg>
+        </div>
+
+        <!-- Bio Header -->
+        <h1 class="profile-name">Alex Morgan</h1>
+        <div class="profile-title">Software Engineer & Designer</div>
+        <p class="profile-bio">Building clean web interfaces and micro-tools. Passionate about Python, UI design, and open-source software.</p>
+
+        <!-- Primary Call to Action Buttons -->
+        <div class="action-grid">
+            <a href="mailto:alex.morgan@example.com" class="btn btn-primary">
+                ✉️ Email Me
+            </a>
+            <a href="tel:+1234567890" class="btn btn-secondary">
+                📞 Call
+            </a>
+            <button class="btn btn-secondary btn-full" onclick="downloadVCard()">
+                📇 Save Contact Card (.vcf)
+            </button>
+        </div>
+
+        <!-- Social Links Stack -->
+        <div class="social-links">
+            <a href="https://github.com" target="_blank" class="social-item">
+                💻 GitHub
+                <span>@alexmorgan</span>
+            </a>
+            <a href="https://linkedin.com" target="_blank" class="social-item">
+                💼 LinkedIn
+                <span>/in/alexmorgan</span>
+            </a>
+            <a href="https://x.com" target="_blank" class="social-item">
+                🌐 Twitter / X
+                <span>@alexmorgan_dev</span>
+            </a>
+        </div>
+
+        <!-- Footer / Location -->
+        <div class="footer-location">
+            📍 San Francisco, CA
+        </div>
+    </div>
+
+    <script>
+        // Generates and downloads a .vcf file directly to the user's device
+        function downloadVCard() {
+            const vCardData = `BEGIN:VCARD
+VERSION:3.0
+FN:Alex Morgan
+TITLE:Software Engineer & Designer
+EMAIL;TYPE=INTERNET,HOME:alex.morgan@example.com
+TEL;TYPE=CELL:+1234567890
+ADR;TYPE=HOME:;;San Francisco;CA;;;
+URL:https://github.com
+END:VCARD`;
+
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', 'Alex_Morgan.vcf');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

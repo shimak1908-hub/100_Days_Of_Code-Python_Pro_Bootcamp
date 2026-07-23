@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Day 60 - POST Request Demo</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        form { display: flex; flex-direction: column; width: 300px; gap: 10px; }
+        input { padding: 8px; }
+        button { padding: 10px; background-color: #0d6efd; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>Contact Form</h1>
+
+    <!-- Form sends a POST request to the /login route -->
+    <form action="/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
